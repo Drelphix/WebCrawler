@@ -7,17 +7,46 @@ import java.io.IOException;
 import java.util.List;
 
 public class File {
-    public void Save(List<String> information) throws IOException {
-        String csv = "C://data.csv";
-        CSVWriter writer = new CSVWriter(new FileWriter(csv));
-        //Create record
-        String[] record = new String[information.size()];
-        for (int i = 0; i<information.size(); i++) {
-            record[i] = "link №"+i+" : "+information.get(i);
+
+    public java.io.File CreateFile(String filename){
+        java.io.File myFile = new java.io.File(filename);
+        if(myFile.exists()){
+            if(myFile.delete()){
+                try {
+                        myFile.createNewFile();
+                        System.out.println("The file was created");
+
+                } catch (IOException e) {
+                    System.out.println("There was an error while file is creating");
+                }
+            }
+        } else {
+            try {
+                myFile.createNewFile();
+                System.out.println("New file was created");
+
+            } catch (IOException e) {
+                System.out.println("There was an error while file is creating");
+            }
+        } return myFile;
+    }
+    public void Save(List<String> information,String csvFile){
+
+        CSVWriter writer = null;
+        try {
+                writer = new CSVWriter(new FileWriter(csvFile,true));
+            }
+        catch (IOException e) {
+            System.out.println("File is blocked");
+            return;
         }
-        //Write the record to file
-        writer.writeNext(record);
-        //close the writer
-        writer.close();
+        String[] out = information.toArray(new String[information.size()]);
+        System.out.println("Writing info ... Please wait...");
+        writer.writeNext(out);
+        try {
+            writer.close();
+        } catch (IOException ignored) {
+        }
+
     }
 }
